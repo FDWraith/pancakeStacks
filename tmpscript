@@ -1,0 +1,49 @@
+#BODY
+push
+move
+250 250 0
+box
+-60 60 40 120 120 80
+#HEAD
+push
+move
+0 100 0
+box
+-40 40 40 80 80 80
+pop
+#Left Arm
+push
+move
+-60 60 0
+rotate
+z -5
+box
+-40 0 20 40 100 40
+pop
+#Right Arm
+push
+move
+60 60 0
+rotate
+z 5
+box
+0 0 20 40 100 40
+pop
+#Left Leg
+push
+move
+-30 -60 0
+rotate
+x 10
+box
+-25 0 25 50 100 50
+pop
+#Right Leg
+push
+move
+30 -60 0
+rotate
+x -10
+box
+-25 0 25 50 100 50  
+display

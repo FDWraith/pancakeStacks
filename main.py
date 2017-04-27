@@ -7,7 +7,9 @@ import math
 screen = new_screen()
 color = [ 0, 255, 255 ]
 stack = []
-stack.append(new_matrix())
+temp = new_matrix()
+ident(temp)
+stack.append(temp)
 
 # print_matrix( make_bezier() )
 # print

@@ -2,6 +2,7 @@ from display import *
 from matrix import *
 from draw import *
 
+import copy 
 """
 Goes through the file named filename and performs all of the actions listed in that file.
 The file follows the following format:
@@ -61,50 +62,54 @@ def parse_file( fname, stack, screen, color ):
     while c < len(lines):
         line = lines[c].strip()
         #print ':' + line + ':'
-
+        #print_stack(stack)
+        #print top
         if line in ARG_COMMANDS:            
             c+= 1
             args = lines[c].strip().split(' ')
             #print 'args\t' + str(args)
         if line == 'push':
-            stack.append(stack[top][:])
+            new = copy.deepcopy(stack[top])
+            stack.append(new)
             top += 1
         elif line == 'pop':
             stack.pop()
             top -= 1
         elif line == 'sphere':
+            edges = [ ]
             #print 'SPHERE\t' + str(args)
             add_sphere(edges,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
             matrix_mult(stack[top], edges)
-            draw_polygons( edges, screen, color )
-            edges = [ ]
+            draw_polygons(edges, screen, color )
+            
         elif line == 'torus':
             #print 'TORUS\t' + str(args)
+            edges = [ ]
             add_torus(edges,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step)
             matrix_mult(stack[top], edges)
             draw_polygons( edges, screen, color )
-            edges = [ ]
         elif line == 'box':
+            edges = [ ]
             #print 'BOX\t' + str(args)
             add_box(edges,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
             matrix_mult(stack[top], edges)
             draw_polygons( edges, screen, color )
-            edges = [ ]
         elif line == 'circle':
+            edges = [ ]
             #print 'CIRCLE\t' + str(args)
             add_circle(edges,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
             matrix_mult(stack[top], edges)
             draw_lines( edges, screen, color )
-            edges = [ ]
         elif line == 'hermite' or line == 'bezier':
+            edges = [ ]
             #print 'curve\t' + line + ": " + str(args)
             add_curve(edges,
                       float(args[0]), float(args[1]),
@@ -114,25 +119,25 @@ def parse_file( fname, stack, screen, color ):
                       step, line)                      
             matrix_mult(stack[top], edges)
             draw_lines( edges, screen, color )
+        elif line == 'line':
             edges = [ ]
-        elif line == 'line':            
             #print 'LINE\t' + str(args)
-
             add_edge( edges,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
             matrix_mult(stack[top], edges)
             draw_lines( edges, screen, color )
-            edges = [ ]
         elif line == 'scale':
             #print 'SCALE\t' + str(args)
             t = make_scale(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, stack[top])
-
+            matrix_mult(stack[top],t)
+            stack[top] = t
+            
         elif line == 'move':
             #print 'MOVE\t' + str(args)
             t = make_translate(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, stack[top])
+            matrix_mult(stack[top],t)
+            stack[top] = t
 
         elif line == 'rotate':
             #print 'ROTATE\t' + str(args)
@@ -144,13 +149,29 @@ def parse_file( fname, stack, screen, color ):
                 t = make_rotY(theta)
             else:
                 t = make_rotZ(theta)
-            matrix_mult(t, stack[top])
-
+            matrix_mult(stack[top], t)
+            stack[top] = t
+        elif line == 'clear':
+            stack = [ ]
+            t = new_matrix()
+            ident(t)
+            stack.append(t)
+            top = 0
         elif line == 'display' or line == 'save':
 
             if line == 'display':
-                display(screen)                
+                display(screen)
             else:
                 save_extension(screen, args[0])
-            
+        
         c+= 1
+
+def print_stack(stack):
+    print "["
+    for item in stack:
+        print"\t["
+        for coords in item:
+            print "\t\t"+str(coords)
+        print"\t]"
+    print "]"
+        
