@@ -157,6 +157,7 @@ def parse_file( fname, stack, screen, color ):
             ident(t)
             stack.append(t)
             top = 0
+            clear_screen(screen)
         elif line == 'display' or line == 'save':
 
             if line == 'display':

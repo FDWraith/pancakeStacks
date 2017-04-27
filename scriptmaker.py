@@ -3,7 +3,7 @@ import math
 with open("script", "w") as fd:
 
     end = ""
-    for i in range(0, 72):
+    for i in range(0, 144):
         end += "clear\n"
         #Body
         end += "push\n"
